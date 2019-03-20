@@ -158,15 +158,6 @@ int hanoiTower::towerCount = 0;
 
 void hanoiSolver_helper(towersOfHanoi& toh, const int& ori, const int& tar, const int& n, int& count, const bool& visual)
 {
-	if(tar > 3 or tar < 1 or ori > 3 or ori < 1)
-	{
-		throw runtime_error("bad tower name");
-	}
-	else if(ori == tar)
-	{
-		return;
-	}
-
 	int buffer_tower = 6-ori-tar;
 
 	if(n == 1)
@@ -196,9 +187,9 @@ void hanoiSolver(towersOfHanoi& toh, const bool& visual)
 int main()
 try {
 
-	towersOfHanoi toh(10);
+	towersOfHanoi toh(2);
 
-	const bool visualize = true;
+	const bool visualize = false;
 
 	hanoiSolver(toh, visualize);
 	return 0;
