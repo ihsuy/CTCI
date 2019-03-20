@@ -52,7 +52,7 @@ void permWithoutDups_helper(string& s, const int& i, const int& j)
 		return;
 	}
 
-	for (int si = i; si < j; ++si)
+	for (int si = i; si <= j; ++si)
 	{	// the loop and strSwap are replacing the 'head' character
 		// with every letter in the string
 		strSwap(s, i, si);
