@@ -81,13 +81,11 @@ void bfs(vector<node*>& graph)
 {
 	queue<int> todo;
 	todo.push(0);
-
+	graph[todo.front()]->visit();
 	while(not todo.empty())
 	{
 		auto cur_node = todo.front();
 		todo.pop();
-
-		graph[cur_node]->visit();
 
 		for(int i = 0; i < graph[cur_node]->neighbours.size(); ++i)
 		{
