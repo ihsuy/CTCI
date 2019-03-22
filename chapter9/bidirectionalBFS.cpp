@@ -30,7 +30,9 @@ inline void inspect(T& t) {typename T::iterator i1 = t.begin(), i2 = t.end(); wh
 using namespace std;
 
 /*
-Implement bidirectional breath-first search
+Simulate social networks and 
+Implement bidirectional breath-first search to find 
+the shortest path between 2 person
 */
 
 static int global_id = 0;
