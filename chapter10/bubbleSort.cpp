@@ -38,13 +38,6 @@ next pair, and so on, continuously making sweeps of the array until it is sorted
 In doing so, the smaller items slowly "bubble" up to the beginning of the list.
 */
 
-void bubbleSwap(vector<int>& v, const int& i, const int& j)
-{
-	int temp = v[i];
-	v[i] = v[j];
-	v[j] = temp;
-}
-
 void bubbleSort_naive(vector<int>& v)
 {
 	int swapCount;
@@ -55,7 +48,8 @@ void bubbleSort_naive(vector<int>& v)
 		{	// since we are checking i and i+1 we need to stop at upperLimit-1
 			if (v[i] > v[j])
 			{
-				bubbleSwap(v, i, j);
+				//bubbleSwap(v, i, j);
+				swap(v[i], v[j]);
 				swapCount++;
 				//printf("Swap v[%d] and v[%d]: ", i, j);
 				//inspect(v);
@@ -73,7 +67,8 @@ void bubbleSort_optimal(vector<int>& v)
 		{
 			if (v[i] > v[j])
 			{
-				bubbleSwap(v, i, j);
+				// bubbleSwap(v, i, j);
+				swap(v[i], v[j]);
 				//printf("Swap v[%d] and v[%d]: ", i, j);
 				//inspect(v);
 			}
@@ -103,9 +98,9 @@ int main()
 	timeIt(bubbleSort_naive, "bubbleSort_naive", v);
 	timeIt(bubbleSort_optimal, "bubbleSort_optimal", v2);
 
-	inspect<vector<int>>(v);
-	cout << "---" << '\n';
-	inspect<vector<int>>(v2);
+	// inspect<vector<int>>(v);
+	// cout << "---" << '\n';
+	// inspect<vector<int>>(v2);
 
 	return 0;
 }

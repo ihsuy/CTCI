@@ -38,13 +38,34 @@ Find the smallest element using a linear scan and move it to the front
 again doing a linear scan. Continue doing this until all the elements are in place.
 */
 
-void insertionSort(vector<int>& v)
+void insertionSort1(vector<int>& v)
 {
 	for(int front = 0; front < v.size(); ++front)
 	{
+		int min_i = front;
 		for(int cur = front+1; cur < v.size(); ++cur)
 		{
-			
+			if(v[cur] < v[min_i])
+			{
+				min_i = cur;
+			}
+		}
+		swap(v[front], v[min_i]);
+	}
+}
+
+void insertionSort2(vector<int>& v)
+{	// maintain a sorted array in the head of v
+	// constantly insert next element to the correct location in the sorted array
+	for(int cur = 1; cur < v.size(); ++cur)
+	{	// insert v[cur] to the sorted subarray before cur
+		int sorted_i = cur-1;
+		while(sorted_i >= 0 and v[sorted_i+1] < v[sorted_i])
+		{	// swap v[cur] to the front and move every elements to their position + 1 
+			// until an element smaller than v[cur] is found
+			// put v[cur] after it
+			swap(v[sorted_i], v[sorted_i+1]);
+			sorted_i--;
 		}
 	}
 }
@@ -53,7 +74,7 @@ int main()
 {
 	srand(chrono::high_resolution_clock::now().time_since_epoch().count());
 
-	const int N = 100;
+	const int N = 20000;
 	// create N random integers and measure performance
 
 	cout << "Creating " << N << " integers...\n";
@@ -66,9 +87,11 @@ int main()
 		v.push_back(rand() % N);
 	}
 
-	insertionSort(v);
+	vector<int> v2 = v;
 
-	inspect<vector<int>>(v);
+	timeIt(insertionSort1, "insertionSort1: insert the smallest from back" , v);
+
+	timeIt(insertionSort2, "insertionSort2: insert next to correct position" , v2);
 
 	return 0;
 }

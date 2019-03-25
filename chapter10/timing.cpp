@@ -35,8 +35,8 @@ void timeIt(void (*sortAlgorithm)(vector<int>&), const string& name, vector<int>
 	auto time_in_nano = chrono::duration_cast<chrono::nanoseconds>(t2).count();
 	auto time_in_micro = chrono::duration_cast<chrono::microseconds>(t2).count();
 
-	cout << name << '\n';
-	cout << "Sorted " << N << " integers\n";
+	cout << "Completed\n";
+	cout << "Sorted " << N << " integers using " << name << '\n';
 	cout << "Time elapsed:\n" << time_in_micro/1000 << " milliseconds\n";
 	cout << time_in_micro << " microseconds\n";
 	cout << time_in_nano << " nanoseconds\n";
