@@ -85,7 +85,7 @@ int main()
 {
 	srand(chrono::high_resolution_clock::now().time_since_epoch().count());
 
-	const int N = 100;
+	const int N = 10000;
 	// create N random integers and measure performance
 
 	cout << "Creating " << N << " integers...\n";
@@ -102,7 +102,7 @@ int main()
 
 	timeIt(bubbleSort_naive, "bubbleSort_naive", v);
 	timeIt(bubbleSort_optimal, "bubbleSort_optimal", v2);
-	
+
 	inspect<vector<int>>(v);
 	cout << "---" << '\n';
 	inspect<vector<int>>(v2);
