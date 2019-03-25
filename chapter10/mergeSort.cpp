@@ -46,8 +46,8 @@ we copy any remaining elements into the target array.
 */
 
 void merge(vector<int> & v, int low, int mid, int high, vector<int>& v_copy)
-{
-	//vector<int> v_copy(v.begin() + low, v.begin() + high + 1);
+{	// note here, no new container is created
+	// we simply copy the right elements into the same container v_copy
 	copy(v.begin() + low, v.begin() + high + 1, v_copy.begin()+low);
 
 	int k = low, left = low, right = mid + 1 ;
@@ -66,6 +66,8 @@ void merge(vector<int> & v, int low, int mid, int high, vector<int>& v_copy)
 		k++;
 	}
 
+	// do this only when left part isn't completely
+	// since the right part is already there
 	int remain = mid - left;
 	for (int i = 0; i <= remain; ++i)
 	{
@@ -90,6 +92,12 @@ void mergeSort_helper(vector<int>& v, const int& left, const int& right, vector<
 
 void mergeSort(vector<int> & v)
 {
+	// v_copy will be used throughout the whole sorting process
+	// as the reference to the original vector
+	// no new vector should be created in this process
+	// as allocating new vectors are VERY VERY unefficient 
+	// (makes this algorithm 50 times slower)
+
 	vector<int> v_copy(v.size());
 	mergeSort_helper(v, 0, v.size() - 1, v_copy);
 }
