@@ -77,15 +77,8 @@ int main()
 	const int N = 20000;
 	// create N random integers and measure performance
 
-	cout << "Creating " << N << " integers...\n";
+	vector<int> v = gen(N);
 
-	vector<int> v;
-	v.reserve(N);
-
-	for (int i = 0; i < N; ++i)
-	{
-		v.push_back(rand() % N);
-	}
 
 	vector<int> v2 = v;
 
