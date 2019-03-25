@@ -15,7 +15,7 @@
 #include <utility>
 #include <bitset>
 #include <string>
-#include "timing.cpp"
+#include "tools.cpp"
 
 typedef long long ll;
 inline int two(int n) { return 1 << n; }
