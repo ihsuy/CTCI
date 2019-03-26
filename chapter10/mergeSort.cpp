@@ -66,8 +66,8 @@ void merge(vector<int> & v, int low, int mid, int high, vector<int>& v_copy)
 		k++;
 	}
 
-	// do this only when left part isn't completely
-	// since the right part is already there
+	// do this only when left part isn't completely merged
+	// because the right part is already in their correct location 
 	int remain = mid - left;
 	for (int i = 0; i <= remain; ++i)
 	{

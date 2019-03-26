@@ -74,7 +74,7 @@ int main()
 {
 	srand(chrono::high_resolution_clock::now().time_since_epoch().count());
 
-	const int N = 20000;
+	const int N = 30;
 	// create N random integers and measure performance
 
 	vector<int> v = gen(N);
