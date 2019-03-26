@@ -48,7 +48,7 @@ int find0(vector<int>& v)
 	// element in a rotated sorted array
 	int low = 0, high = v.size()-1;
 
-	while(low < high)
+	while(low <= high)
 	{
 		int mid = (low + high)/2;
 
@@ -63,10 +63,6 @@ int find0(vector<int>& v)
 		else if(v[mid] < v[low])
 		{
 			high = mid-1;
-		}
-		else
-		{
-			break;
 		}
 	}
 	return 0;
@@ -139,7 +135,7 @@ int wrapMid(int i, int j, const int& op, const int& mod)
 	}
 }
 
-int searchRotatedArray(vector<int>& v, const int n)
+int searchRotatedArray_wrapping(vector<int>& v, const int n)
 {	// first find the true 0 position
 	int op = find0(v);
 
@@ -169,21 +165,66 @@ int searchRotatedArray(vector<int>& v, const int n)
 	return -1;
 }
 
+int binarySearch(const vector<int>& v, const int& low, const int& high, const int& val)
+{
+	if(low > high)
+	{
+		return -1;
+	}
+
+	int mid = (high+low)/2;
+
+	if(v[mid] == val)
+	{
+		return mid;
+	}
+
+	if(v[mid] < val)
+	{
+		return binarySearch(v, mid+1, high, val);
+	}
+	else
+	{
+		return binarySearch(v, low, mid-1, val);
+	}
+}
+
+int searchRotatedArray(vector<int>& v, const int n)
+{	
+	int op = find0(v);
+
+	// check if n belongs to the left part of right part
+	if(v[op] == n)
+	{
+		return op;
+	}
+
+	if(n <= v.back())
+	{	// n is in the right part 
+		// do binary search
+		return binarySearch(v, op+1, v.size()-1, n);
+	}
+	else
+	{	// on left
+		return binarySearch(v, 0, op-1, n);
+	}
+}
+
 int main()
 {
 	vector<int> v;
-	for (int i = 1; i < 11000000; ++i)
+	for (int i = 1; i < 11; ++i)
 	{
 		v.push_back(i);
 	}
 
-	//inspect<vector<int>>(v);
+	inspect<vector<int>>(v);
 
-	rotateBy(v, 2);
+	rotateBy(v, 4);
 
-	//inspect<vector<int>>(v);
+	inspect<vector<int>>(v);
 
-	cout << searchRotatedArray(v, 10) << endl;
+	cout << searchRotatedArray(v, 8) << endl;
 
 	//cout << find0(v) << endl;
 
