@@ -149,7 +149,7 @@ pair<int, int> sortedMatrixBinarySearch(const vector<vector<int>>& m,
                                         const int& coll, const int& colr,
                                         const int& val)
 {
-	cout << "rowl: " << rowl << " rowr: " << rowr << " coll: " << coll << " colr: " << colr << '\n';
+	// cout << "rowl: " << rowl << " rowr: " << rowr << " coll: " << coll << " colr: " << colr << '\n';
 	int rl = rowl, rr = rowr, cl = coll, cr = colr;
 
 	if (rl > rr or cl > cr)
@@ -166,7 +166,7 @@ pair<int, int> sortedMatrixBinarySearch(const vector<vector<int>>& m,
 
 		if (m[rl][cl] > val)
 		{
-			cout << "found diag: " << rl << " " << cl << endl;
+			// cout << "found diag: " << rl << " " << cl << endl;
 			auto result = sortedMatrixBinarySearch(m, rl, rr, coll, prev_c, val);
 			if(result != pair<int, int>(-1, -1))
 			{
