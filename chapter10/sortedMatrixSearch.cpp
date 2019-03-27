@@ -85,24 +85,24 @@ pair<int, int> sortedMatrixSearch_dumb(const vector<vector<int>>& m, const int& 
 		{
 			for (int j = 1; j < width - 1; ++j)
 			{
-				if(isValidCol[j])
+				if (isValidCol[j])
 				{
-					if(m[i][j] == val)
+					if (m[i][j] == val)
 					{
 						return {i, j};
 					}
 
-					if(m[i][j] > val)
+					if (m[i][j] > val)
 					{
 						int r = i, c = j;
 
-						while(r < height-1)
+						while (r < height - 1)
 						{
 							isValidRow[r] = false;
 							r++;
 						}
 
-						while(c < width-1)
+						while (c < width - 1)
 						{
 							isValidCol[c] = false;
 							c++;
@@ -112,7 +112,7 @@ pair<int, int> sortedMatrixSearch_dumb(const vector<vector<int>>& m, const int& 
 			}
 		}
 	}
-	return {-1, -1};
+	return { -1, -1};
 }
 
 pair<int, int> sortedMatrixSearch_optimal(const vector<vector<int>>& m, const int& val)
@@ -120,25 +120,75 @@ pair<int, int> sortedMatrixSearch_optimal(const vector<vector<int>>& m, const in
 	int width = m[0].size(), height = m.size();
 	// starting point
 	int r = 0;
-	int c = width-1;
+	int c = width - 1;
 
-	while(r < height and c < width)
-	{	
+	while (r < height and c < width)
+	{
 		int cur = m[r][c];
 
-		if(cur == val)
+		if (cur == val)
 		{
 			return {r, c};
 		}
 
-		if(cur > val)
+		if (cur > val)
 		{
 			c--;
 		}
-		else if(cur < val)
+		else if (cur < val)
 		{
 			r++;
 		}
+	}
+
+	return { -1, -1};
+}
+
+pair<int, int> sortedMatrixBinarySearch(const vector<vector<int>>& m,
+                                        const int& rowl, const int& rowr,
+                                        const int& coll, const int& colr,
+                                        const int& val)
+{
+	cout << "rowl: " << rowl << " rowr: " << rowr << " coll: " << coll << " colr: " << colr << '\n';
+	int rl = rowl, rr = rowr, cl = coll, cr = colr;
+
+	if (rl > rr or cl > cr)
+	{
+		return { -1, -1};
+	}
+	int prev_r = rl, prev_c = cl;
+	while (rl <= rr and cl <= cr)
+	{
+		if (m[rl][cl] == val)
+		{
+			return {rl, cl};
+		}
+
+		if (m[rl][cl] > val)
+		{
+			cout << "found diag: " << rl << " " << cl << endl;
+			auto result = sortedMatrixBinarySearch(m, rl, rr, coll, prev_c, val);
+			if(result != pair<int, int>(-1, -1))
+			{
+				return result;
+			}
+			return sortedMatrixBinarySearch(m, rowl, prev_r, cl, colr, val);
+		}
+
+		// iterative alone diagonal
+		prev_r = rl;
+		prev_c = cl;
+		rl++;	
+		cl++;
+	}
+
+	if(rl > rr and cl <= cr and val > m[prev_r][prev_c])
+	{
+		return sortedMatrixBinarySearch(m, rowl, prev_r, prev_c+1, cr, val);
+	}
+	else if(cl > cr and rl <= rr and val > m[prev_r][prev_c])
+	{
+		return sortedMatrixBinarySearch(m, prev_r+1, rr, coll, prev_c, val);
 	}
 
 	return {-1, -1};
@@ -152,10 +202,15 @@ int main()
 		{4, 5, 5, 7, 9},
 		{5, 5, 6, 7, 10},
 		{6, 8, 9, 9, 10},
-		{7, 9, 10, 10, 11}
+		{7, 9, 10, 10, 11},
+		{8, 11, 19, 20, 21}
 	};
 
 	auto result = sortedMatrixSearch_optimal(m, 8);
+
+	cout << "optimal r: " << result.first << " c: " << result.second << '\n';
+
+	result = sortedMatrixBinarySearch(m, 0, m.size()-1, 0, m[0].size()-1, 19);
 
 	cout << "r: " << result.first << " c: " << result.second << '\n';
 
