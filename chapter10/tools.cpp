@@ -65,7 +65,23 @@ vector<int> gen(const int& N)
 	vector<int> res;
 	res.reserve(N);
 
-	for(int i = 0; i < N; ++i)
+	for(unsigned int i = 0; i < N; ++i)
+	{
+		res.push_back(rand() % N);
+	}
+
+	return res;
+}
+
+vector<unsigned long long> llgen(const unsigned long long& N)
+{
+	srand(chrono::high_resolution_clock::now().time_since_epoch().count());
+	cout << "Creating " << N << " unsigned long long integers...\n";
+
+	vector<unsigned long long> res;
+	res.reserve(N);
+
+	for(unsigned long long i = 0; i < N; ++i)
 	{
 		res.push_back(rand() % N);
 	}
