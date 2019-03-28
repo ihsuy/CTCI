@@ -73,6 +73,8 @@ void printLastKLines(const int& k)
 		throw runtime_error("Can't open file: " + addr);
 	}
 
+	// use a list to serve as a size K sliding window
+	// remove the first node whenever K capacity is reached
 	list<string> kLines;
 
 	string line;
@@ -86,7 +88,6 @@ void printLastKLines(const int& k)
 	}
 
 	// display content of kLines
-
 	for(const auto& item : kLines)
 	{
 		cout << "line: " << item << '\n';
