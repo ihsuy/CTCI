@@ -1,2 +1,2 @@
-# CTCI
-My solutions to problems in Cracking the code interview
+# CtCi
+My solutions for problems in book ***Cracking the code interview***
