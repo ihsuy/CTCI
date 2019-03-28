@@ -52,23 +52,23 @@ public:
 	};
 
 	void copy(const smartPointer<T>& obj)
-	{
+	{	// copy another smartPointer obj
 		if(obj.ptr != ptr)
-		{
+		{	// if this smartPointer doesn't point to the same object
 			refCounter[ptr]--;
 		}
 		else
-		{
+		{	// if its the same obj
 			refCounter[ptr]++;
 		}
 
 		if(refCounter[ptr]==0)
-		{
+		{	// copy may cause reference count for certain obj becoming 0
 			cout << "removing \"" << *ptr << "\" at address " << ptr << endl;
 			delete ptr;
 			ptr = nullptr;
 		}
-
+		
 		ptr = obj.ptr;
 	}
 
