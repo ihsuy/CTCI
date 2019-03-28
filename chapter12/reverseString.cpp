@@ -30,14 +30,48 @@ inline void inspect(T& t){typename T::iterator i1 = t.begin(), i2 = t.end(); whi
 using namespace std;
 
 /*
-
+Reverse String: Implement a function void reverse( char* str)
+in C or C++ which reverses a null-terminated string.
 */
 
+char* to_c_str(const string& s)
+{
+	char* result = new char[s.length()];
 
+	int i = 0;
+	for(; i < s.length(); ++i)
+	{
+		result[i] = s[i];
+	}
+
+	result[i] = 0;
+
+	return result;
+}
+
+void reverseCString(char* c)
+{
+	int len = strlen(c);
+
+	int front = 0, back = len-1;
+
+	while(front<back)
+	{
+		char temp = c[front];
+		c[front] = c[back];
+		c[back] = temp;
+
+		front++;
+		back--;
+	}
+}
 
 int main()
 {
-
-
+	string s = "crackingthecodinginterview";
+	char* c = to_c_str(s);
+	printf("Original string: %s\n", c);
+	reverseCString(c);
+	printf("Reversed string: %s\n", c);
 	return 0;
 }
