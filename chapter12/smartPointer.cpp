@@ -66,6 +66,7 @@ public:
 		{
 			cout << "removing \"" << *ptr << "\" at address " << ptr << endl;
 			delete ptr;
+			ptr = nullptr;
 		}
 
 		ptr = obj.ptr;
@@ -86,6 +87,7 @@ public:
 		{
 			cout << "removing \"" << *ptr << "\" at address " << ptr << endl;
 			delete ptr;
+			ptr = nullptr;
 		}
 
 		ptr = obj;
