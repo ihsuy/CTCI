@@ -90,7 +90,7 @@ pair<int, int> smallestDifference_helper(const vector<int>& v1, const vector<int
 }
 
 pair<int, int> smallestDifference(vector<int> v1, vector<int> v2)
-{	// sort and do binary search
+{	// sort so we can do binary search
 	sort(v1.begin(), v1.end());
 	sort(v2.begin(), v2.end());
 
@@ -111,6 +111,48 @@ pair<int, int> smallestDifference(vector<int> v1, vector<int> v2)
 	return smallestDifference_helper(v1, v2);
 }
 
+pair<int, int> smallestDifference_linearSearch(vector<int> v1, vector<int> v2)
+{
+	sort(v1.begin(), v1.end());
+	sort(v2.begin(), v2.end());
+
+	int i1 = 0, i2 = 0;
+
+	pair<int, int> result;
+
+	int min_diff = INT_MAX;
+
+	while(i1 < v1.size() and i2 < v2.size())
+	{
+		int diff = v1[i1] - v2[i2];
+
+		int abs_diff = abs(diff);
+
+		if(abs_diff < min_diff)
+		{
+			min_diff = abs_diff;
+			result = {v1[i1], v2[i2]};
+		}
+
+		// if diff < 0, we want to make v1[i1] bigger -> i1++
+		// else if diff > 0 we want to make v2[i2] bigger -> i2++
+		// else 0 diff found answer
+		if(diff == 0)
+		{
+			return {v1[i1], v2[i2]};
+		}
+
+		if(diff < 0)
+		{
+			i1++;
+		}
+		else
+		{
+			i2++;
+		}
+	}
+	return result;
+}
 
 int main()
 {
@@ -118,8 +160,10 @@ int main()
 	vector<int> v2 {23, 127, 235, 19, 8};
 
 	auto result = smallestDifference(v1, v2);
+	auto result2 = smallestDifference_linearSearch(v1, v2);
 	cout << "pair of values with the smallest difference:\n";
-	printf("(%d, %d)\n", result.first, result.second);
+	printf("method1: (%d, %d)\n", result.first, result.second);
+	printf("method2: (%d, %d)\n", result2.first, result2.second);
 
 	return 0;
 }
