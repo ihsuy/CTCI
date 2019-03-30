@@ -127,7 +127,7 @@ string XMLencoding(const string& file_addr, const unordered_map<string, string>&
 
 int main()
 {
-	const string addr = "/Users/ihsuy/crack/chapter16_Moderate/xmlEncoding_inputFile.xml";
+	const string addr = "/Users/username/CtCi/chapter16_Moderate/xmlEncoding_inputFile.xml";
 
 	unordered_map<string, string> preDefinedKeys
 	{
