@@ -45,6 +45,42 @@ pqrs tuv wxyz
 0
 */
 
+struct trieNode
+{
+	vector<trieNode*> children;
+	char val;
+	bool isWordEnd;
+	trieNode(const char& c, const bool& iwe = false): children(26, nullptr), val(c), isWordEnd(iwe) {}
+};
+
+int chtoi(const char& ch)
+{
+	if(isupper(ch))
+	{
+		return tolower(ch)-'a';
+	}
+	else
+	{
+		return ch-'a';
+	}
+}
+
+void insert(trieNode* root, const string& word)
+{
+	auto wlen = word.length();
+	int i = 0;
+	while(i < wlen)
+	{
+		int alphval = chtoi(word[i]);
+
+		if(root->children[alphval] == nullptr)
+		{
+			root->children[alphval] = new trieNode(alphval, (i==wlen-1));
+		}
+		root = root->children[alphval];
+		i++;
+	}
+}
 
 
 int main()
