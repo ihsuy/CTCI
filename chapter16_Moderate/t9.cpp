@@ -178,7 +178,7 @@ unordered_map<char, string> keypad
 	/*1*/          {'2', "abc"}, {'3', "def"},
 	{'4', "ghi"},  {'5', "jkl"}, {'6', "mno"},
 	{'7', "pqrs"}, {'8', "tuv"}, {'9', "wxyz"},
-	/*0*/
+						/*0*/
 };
 
 void extra_match(const string& letters, const int& depth, const int& default_depth,
@@ -239,11 +239,11 @@ void matchWords(const string& userInput, const int& idx, const string& letters,
 }
 
 vector<string> autoSuggestion(const string& userInput, trieNode* engWords, const int& extra_depth = 3)
-{	
-	for(auto& ch : userInput)
+{
+	for (auto& ch : userInput)
 	{
-		if(ch > '9' or ch < '2')
-		{	
+		if (ch > '9' or ch < '2')
+		{
 			cout << "userInput contains invalid character: " << ch << '\n';
 			return {};
 		}
