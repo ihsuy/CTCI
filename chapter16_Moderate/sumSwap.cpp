@@ -56,7 +56,7 @@ pair<int, int> sumSwap(const vector<int>& v1, const vector<int>& v2)
 
 	int target = (sum2 - sum1);
 
-	if(target%2 != 0)
+	if (target % 2 != 0)
 	{
 		cout << "Can't swap to make sum(v1) == sum(v2)\n";
 		return {0, 0};
@@ -64,11 +64,11 @@ pair<int, int> sumSwap(const vector<int>& v1, const vector<int>& v2)
 
 	target /= 2;
 
-	for(int i = 0; i < v1.size(); ++i)
+	for (int i = 0; i < v1.size(); ++i)
 	{
 		int wanted = target + v1[i];
 
-		if(v2_set.count(wanted)!=0)
+		if (v2_set.count(wanted) != 0)
 		{
 			return {v1[i], wanted};
 		}
