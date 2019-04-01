@@ -82,10 +82,74 @@ void insert(trieNode* root, const string& word)
 	}
 }
 
+bool search(trieNode* root, const string& word)
+{
+	auto wlen = word.length();
+	int i = 0;
+	while(i < wlen-1)
+	{
+		int alphval = chtoi(word[i]);
+		if(root->children[alphval] == nullptr)
+		{
+			return false;
+		}
+
+		root = root->children[alphval];
+
+		i++;
+	}
+
+	int alphval = chtoi(word[i]);
+	if(root->children[alphval] != nullptr and root->children[alphval]->isWordEnd)
+	{
+		return true;
+	}
+	return false;
+}
+
+trieNode* loadEnglishWords(const string& addr)
+{
+	ifstream inputFile(addr);
+	if(not inputFile)
+	{
+		throw runtime_error("Can't open file: " + addr);
+	}
+
+	trieNode* trie = new trieNode(0, false);
+
+	string word;
+	while(inputFile>>word)
+	{
+		// bool badWord = false;
+		// for(auto& ch: word)
+		// {
+		// 	bool c1 = islower(ch), c2 = isupper(ch);
+		// 	if(not c1 and not c2)
+		// 	{
+		// 		badWord = true;
+		// 	}
+		// 	else if(c2)
+		// 	{
+		// 		ch = tolower(ch);
+		// 	}
+		// }
+
+		// if(badWord)
+		// {
+		// 	cout << word << endl;
+		// 	continue;
+		// }
+
+		insert(trie, word);
+	}
+
+	return trie;
+}
+
 
 int main()
 {
-
-
+	auto engWords = loadEnglishWords("/Users/ihsuy/crack/chapter16_Moderate/engWords.txt");
+	cout << "found: " << search(engWords, "interestings") << '\n';
 	return 0;
 }
