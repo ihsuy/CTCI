@@ -74,12 +74,47 @@ vector<pair<int, int>> pairWithSum(const vector<int>& v, const int& target)
 	return result;
 }
 
+vector<pair<int, int>> pairWithSum_oneRun(const vector<int>& v, const int& target)
+{
+	vector<pair<int, int>> result;
+	unordered_map<int, int> counter;
+
+	for(int i = 0; i < v.size(); ++i)
+	{
+		int complement = target - v[i];
+		if(counter.count(complement) > 0)
+		{
+			result.push_back({v[i], complement});
+			counter[complement]--;
+		}
+		else if(counter.count(v[i]) == 0)
+		{
+			counter[v[i]] = 1;
+		}
+		else
+		{
+			counter[v[i]]++;
+		}
+	}
+
+	return result;
+}
+
 
 int main()
 {
 	vector<int> v = {6, 1, 1, 0, 3, 3, 6, 5, 7, 2, 2};
+
 	auto result = pairWithSum(v, 6);
+	auto result2 = pairWithSum_oneRun(v, 6);
+	
 	for(auto& item : result)
+	{
+		cout << "(" << item.first << ", " << item.second << ")\n";
+	}
+
+	cout << "result2\n";
+	for(auto& item : result2)
 	{
 		cout << "(" << item.first << ", " << item.second << ")\n";
 	}
