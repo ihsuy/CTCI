@@ -31,16 +31,15 @@ inline void inspect(T& t) {typename T::iterator i1 = t.begin(), i2 = t.end(); wh
 using namespace std;
 
 /*
-Pairs with Sum: Design an algorithm to find all 
+Pairs with Sum: Design an algorithm to find all
 pairs of integers within an array which sum to a specified value.
 */
-
 
 vector<pair<int, int>> pairWithSum(const vector<int>& v, const int& target)
 {
 	vector<pair<int, int>> result;
 
-	unordered_map<int, itn> unique_elementCounter;
+	unordered_map<int, int> unique_elementCounter;
 	for (int i = 0; i < v.size(); ++i)
 	{
 		if (unique_elementCounter.count(v[i]) == 0)
@@ -58,16 +57,16 @@ vector<pair<int, int>> pairWithSum(const vector<int>& v, const int& target)
 		int val2 = target - v[i];
 		bool sameVal = (val2 == v[i]);
 
-		if (unique_elementsCounter.count(v[i]) != 0
-		        and unique_elementsCounter.count(val2) != 0
-		        and not (sameVal and unique_elementsCounter[v[i]] < 2))
+		if (unique_elementCounter.count(v[i]) != 0
+		        and unique_elementCounter.count(val2) != 0
+		        and not (sameVal and unique_elementCounter[v[i]] < 2))
 		{
 			result.push_back({v[i], val2});
 
-			unique_elementsCounter.erase(v[i]);
+			unique_elementCounter.erase(v[i]);
 			if (not sameVal)
 			{
-				unique_elementsCounter.erase(val2);
+				unique_elementCounter.erase(val2);
 			}
 		}
 	}
@@ -78,7 +77,12 @@ vector<pair<int, int>> pairWithSum(const vector<int>& v, const int& target)
 
 int main()
 {
-
+	vector<int> v = {6, 1, 1, 0, 3, 3, 6, 5, 7, 2, 2};
+	auto result = pairWithSum(v, 6);
+	for(auto& item : result)
+	{
+		cout << "(" << item.first << ", " << item.second << ")\n";
+	}
 
 	return 0;
 }
