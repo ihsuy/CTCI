@@ -57,7 +57,7 @@ int rand7_2()
 {	// generate random number from 0 - 6 given rand5()
 	while(true)
 	{
-		int r1 = rand5()*2; // 0-9
+		int r1 = rand5()*2; // even number between0-9
 		int r2 = rand5();
 		if(r2 < 4)
 		{
