@@ -63,7 +63,7 @@ int calculator(const string& input)
 		// now input[i] is an operator
 		component.push_back(string(1, input[i]));
 		i++;
-	}
+	} 
 
 	for (int i = 1 ; i < component.size();)
 	{
