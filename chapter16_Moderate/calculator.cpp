@@ -105,6 +105,11 @@ int calculator(const string& input)
 	return result;
 }
 
+int calculator_stack(const string& expression)
+{
+	
+}
+
 int main()
 {
 	const string expression = "1+2*3/4-5+123124*2-1234/2*2";
