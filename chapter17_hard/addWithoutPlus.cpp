@@ -73,15 +73,38 @@ int bitmanip_add(const int& a, const int& b)
 	{	// deal with the case when last carry isn't 0
 		result |= (carry<<loc);
 	}
-	
+
 	return result;
+}
+
+int bitmanip_add_smart(const int& a, const int& b)
+{	
+	if(b == 0)
+	{	// no carry
+		return a;
+	}
+	// only calculate sum 
+	int sum = a^b; 
+	// only calculate carry and shift left by 1
+	// since carry is going to be added to the next digit
+	int carry = (a&b)<<1; 
+
+	// recursively add carry to sum
+	// until there's no carry
+	return bitmanip_add_smart(sum, carry);
 }
 
 int main()
 {
 	int a = 777;
 	int b = 222; 
+
 	cout << bitmanip_add(a, b) << '\n';
+
+	cout << bitset<16>(a) << '\n';
+	cout << bitset<16>(b)<<'\n';
+
+	cout << bitmanip_add_smart(a, b) << '\n';
 
 	return 0;
 }
