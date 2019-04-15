@@ -134,8 +134,8 @@ int main()
 	{
 		buffer[i] = count2s_forPowerOf10_under(i);
 	}
-
-	for (int i = 20000; i < 21234; ++i)
+	// test 
+	for (int i = 0; i < 21234; i += 7)
 	{
 		auto res1 = count2s_under(i, buffer);
 		auto res2 = count2s_under_bf(i);
