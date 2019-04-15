@@ -52,7 +52,7 @@ int count2s(int n)
 }
 
 int count2s_under_bf(const int& n)
-{
+{	// brute forcely count 2s in each number and sum them up
 	int result = 0;
 	for(int i = 2; i <= n; ++i)
 	{
@@ -73,7 +73,6 @@ int count2s_forPowerOf10_under(const int& n)
 	// 				 and there's the special range of number
 	// 				 namely from 2xxx... to 2999... and this range itself
 	// 				 contributes 10^N much of 2s.
-
 	if(n == 0)
 	{
 		return 0;
@@ -100,21 +99,24 @@ int count2s_under(const int& n, unordered_map<int, int>& buffer)
 	int sig = n/base;
 	// retreive pre calculated result for bases
 	int unit_size = buffer[base];
-	// default result is unit size which assumes n is less than 2*base
+	// default result with unit_size which assumes n is less than 2*base
 	int result = unit_size;
 	// remainder is what we get after removing all bases
 	int remainder = n%base;
 
+	// handle the cases when n is no less than 2*base
 	if(sig > 2)
-	{	// if we have more than 2 bases then add base 
+	{	// if we have more than 2 bases we have 1 base much of extra 2s
 		// (explained in count2s_forPowerOf10_under function)
 		result *= sig;
 		result += base;
 	}
 	else if(sig == 2)
 	{	// if we have exactly 2 bases then
-		// we need to handle the "uncomplete special range"
+		// we need to handle the "uncomplet special range"
 		result *= 2;
+		// contrast to the case above which adds a whole base to the result
+		// we add exactly remainder + 1 much of extra 2s since the ranges isn't complete
 		result += remainder+1;
 	}
 
