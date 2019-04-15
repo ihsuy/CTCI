@@ -63,12 +63,21 @@ int count2s_under_bf(const int& n)
 
 // Solution
 int count2s_forPowerOf10_under(const int& n)
-{	// only work for positive powers of 10
+{	// only works for positive powers of 10
+
+	// recursively count 2s under powers of 10
+	// this calculation is based on the observation that
+	// if number of 2s under 10^N is expressed by f(N)
+	// then f(N+1) = f(N)*10 + 10^N
+	// explaination: there are f(N)*10 much of 10^N in 10^(N+1)
+	// 				 and there's the special range of number
+	// 				 namely from 2xxx... to 2999... and this range itself
+	// 				 contributes 10^N much of 2s.
+
 	if(n == 0)
 	{
 		return 0;
 	}
-
 	if(n == 10)
 	{
 		return 1;
@@ -85,28 +94,31 @@ int count2s_under(const int& n, unordered_map<int, int>& buffer)
 	{
 		return (n >= 2);
 	}
-
+	// find "base" for n, for example base of 42984 is 10000
 	int base = pow(10, to_string(n).length()-1);
-
+	// how many base does n contain?
 	int sig = n/base;
-
+	// retreive pre calculated result for bases
 	int unit_size = buffer[base];
-
+	// default result is unit size which assumes n is less than 2*base
 	int result = unit_size;
-
+	// remainder is what we get after removing all bases
 	int remainder = n%base;
 
 	if(sig > 2)
-	{
+	{	// if we have more than 2 bases then add base 
+		// (explained in count2s_forPowerOf10_under function)
 		result *= sig;
 		result += base;
 	}
 	else if(sig == 2)
-	{
+	{	// if we have exactly 2 bases then
+		// we need to handle the "uncomplete special range"
 		result *= 2;
 		result += remainder+1;
 	}
 
+	// recurse
 	result += count2s_under(remainder, buffer);
 
 	return result;
