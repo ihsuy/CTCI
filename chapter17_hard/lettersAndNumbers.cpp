@@ -132,7 +132,7 @@ pair<int, int> findLongestBalancedSubarray_faster(vector<char>& arr)
 }
 int main()
 {
-	vector<char> arr {'8', '1', 'b', '2', '4', 'a', 'z', '1', 'o'};
+	vector<char> arr {'b', 'b', 'b', 'b', '8', '1', 'b', '2', '4', 'a', 'z', '1', 'o', 'o', '5', 'o', 'o', 'o', 'o', 'o'};
 	auto result = findLongestBalancedSubarray(arr);
 	auto longest = vector<char> {arr.begin() + result.first, arr.begin() + result.second + 1};
 	inspect<vector<char>>(longest);
