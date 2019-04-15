@@ -35,6 +35,10 @@ Letters and Numbers: Given an array filled with letters and numbers,
 find the longest subarray with an equal number of letters and numbers.
 */
 
+// Solution 1 O(n^2)
+// brute force solution
+// compare lengths of all possible balanced (has same number of "numbers" and "letters")
+// find the largest one
 pair<int, int> findLongestBalancedSubarray(vector<char>& arr)
 {
 	int result_low = 0, result_high = 0;
@@ -70,6 +74,17 @@ pair<int, int> findLongestBalancedSubarray(vector<char>& arr)
 	return {result_low, result_high};
 }
 
+// solution 2 O(n)
+// use 2 arrays b0 b1 to keep track of "how balanced the array is" (demonstrated below)
+// input:   1a11a111a111aaaaaa
+// balance: 101212343456543210
+// as shown above, we first prepare an integer "balance"
+// whenever we see a number we increment balance else we decrement it by 1
+
+// we discover that, if input[i] is an number, we need to find the most far j 
+// where balance[j] equal to balance[i]-1
+// and if input[i] is a letter, we find balance[j] equal to balance[i]+1
+
 pair<int, int> findLongestBalancedSubarray_faster(vector<char>& arr)
 {
 	unordered_map<int, int> buffer;
@@ -104,8 +119,8 @@ pair<int, int> findLongestBalancedSubarray_faster(vector<char>& arr)
 		buffer[balance] = i;
 	}
 
-	int maxlen = 0;
-	int low, high;
+	int maxlen = 0, low = 0, high = 0;
+
 	for (int i = 0; i < b1.size(); ++i)
 	{
 		int len = buffer[b1[i].first - 1] - b1[i].second + 1;
@@ -117,6 +132,7 @@ pair<int, int> findLongestBalancedSubarray_faster(vector<char>& arr)
 			low = b1[i].second;
 		}
 	}
+
 	for (int i = 0; i < b0.size(); ++i)
 	{
 		int len = buffer[b0[i].first + 1] - b0[i].second + 1;
@@ -132,7 +148,7 @@ pair<int, int> findLongestBalancedSubarray_faster(vector<char>& arr)
 }
 int main()
 {
-	vector<char> arr {'b', 'b', 'b', 'b', '8', '1', 'b', '2', '4', 'a', 'z', '1', 'o', 'o', '5', 'o', 'o', 'o', 'o', 'o'};
+	vector<char> arr {'1', 'a', '1', '1', 'a', '1', '1', '1', 'a', '1', '1', '1', 'a', 'a', 'a', 'a', 'a', '1', 'a'};
 	auto result = findLongestBalancedSubarray(arr);
 	auto longest = vector<char> {arr.begin() + result.first, arr.begin() + result.second + 1};
 	inspect<vector<char>>(longest);
