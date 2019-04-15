@@ -51,35 +51,42 @@ Output: John (27), Kris (36)
 
 vector<pair<string, int>> mergeNameFrequencies(const vector<pair<string, int>>& names,
                        const vector<pair<string, string>>& synonyms)
-{
+{	// use a hashTable for quick look up of number of person with certain name
 	unordered_map<string, int> number_of_person{names.begin(), names.end()};
-
+	// build a graph where names are nodes
 	unordered_map<string, unordered_set<string>> graph;
 
+	// construct the graph by inserting each pair of name into the hashmap
+	// and also insert reversed pair, 
+	// since saying A is synonymous B is equivalent to saying B is synonymous to A
 	for (int i = 0; i < synonyms.size(); ++i)
 	{
 		graph[synonyms[i].first].insert(synonyms[i].second);
 		graph[synonyms[i].second].insert(synonyms[i].first);
 	}
-
+	// use a hashtable to keep track of all the names that we have seen so far
+	// to avoid counting the same names again, as well as detecting loops if exists
 	unordered_set<string> seen;
 
 	vector<pair<string, int>> result;
 
 	for (auto& connections : graph)
-	{
+	{	// only proceed if we've never seen this name so far
 		if (seen.count(connections.first) != 0)
 		{
 			continue;
 		}
-
+		// note there's the case when the name is not 
+		// provided with corresponding "number of person"
+		// in this case set the value to 0
 		pair<string, int> tmp{connections.first,
 		                      number_of_person.count(connections.first) == 0
 		                      ? 0 : number_of_person[connections.first]};
-
+		// do a dfs in the graph
 		queue<string> todo;
 		todo.push(connections.first);
-		seen.insert(connections.first);
+
+		seen.insert(connections.first); // mark as seen
 
 		while (not todo.empty())
 		{
@@ -87,22 +94,23 @@ vector<pair<string, int>> mergeNameFrequencies(const vector<pair<string, int>>& 
 			todo.pop();
 
 			if (graph.count(p) != 0)
-			{
+			{	// if the name doesn't exist in the first field of the 
+				// key_value pairs of the map, its a dead end
 				for (auto& name : graph[p])
-				{
+				{	// check if seen to avoid infinite loop
 					if(seen.count(name) == 0)
 					{
 						todo.push(name);
-						seen.insert(name);
+						seen.insert(name); // mark as seen
+
 						if (number_of_person.count(name) != 0)
-						{
+						{	
 							tmp.second += number_of_person[name];
 						}
 					}
 				}
 			}
 		}
-
 		result.push_back(tmp);
 	}
 
@@ -117,7 +125,9 @@ int main()
 		{"Jon", 12},
 		{"Chris", 13},
 		{"Kris", 4},
-		{"Christopher", 19}
+		{"Christopher", 19},
+		{"Yushi", 1},
+		{"Yuushi", 3},
 	};
 
 	vector<pair<string, string>> synonyms
@@ -125,7 +135,8 @@ int main()
 		{"Jon", "John"},
 		{"John", "Johnny"},
 		{"Chris", "Kris"},
-		{"Chris", "Christopher"}
+		{"Chris", "Christopher"},
+		{"Yushi", "Yuushi"}
 	};
 
 	// desired output: John (27), Kris (36)
