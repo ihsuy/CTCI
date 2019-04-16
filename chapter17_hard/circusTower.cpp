@@ -47,26 +47,30 @@ Output: The longest tower is length 6 and includes from top to bottom:
 // method 1: use the fact that if tower[1, n] is correctly
 // constructed, we then only need to try to append every "valid" person
 // under the tower and find the one that yields the largest result
+
+// note this solution is to a variation of the people
+// find the tallest tower
+// i didn't read the problem carefully before started coding...
 bool taller_and_heavier(const pair<int, int>& p1, const pair<int, int>& p2)
 {	// decide if p2 can be place under p1
 	// in other words check if all dimensions of p2 is larger than p1
 	return (p2.first > p1.first and p2.second > p1.second);
 }
 
-int highestTower1_helper(vector<pair<int, int>> people, const int& prev, 
-	int* buffer)
+int highestTower1_helper(vector<pair<int, int>> people, const int& prev,
+                         int* buffer)
 {
 	int maxh = 0;
 	for (int i = 0; i < people.size(); ++i)
 	{
 		if (taller_and_heavier(people[prev], people[i]))
-		{	// people[i] has to be both taller 
+		{	// people[i] has to be both taller
 			// and heavier than people[prev]
-			// then we only have the append the result 
+			// then we only have the append the result
 			// of when using people[i] as top of the tower
 			int lower_result = 0;
 
-			if(buffer[i] != 0)
+			if (buffer[i] != 0)
 			{	// if already calculated retrieve the prev result
 				lower_result = buffer[i];
 			}
@@ -107,10 +111,59 @@ int highestTower1(const vector<pair<int, int>>& people)
 	return maxh;
 }
 
+// method 2
+// sort and for each person in circus
+// create 2 branches : include or not include
+// solves the original problem
+
+vector<pair<int, int>> highestTower2_helper(const vector<pair<int, int>>& people, const int& i, vector<pair<int, int>>& tower)
+{
+	if (i == people.size())
+	{
+		return tower;
+	}
+
+	vector<pair<int, int>> tower_include{};
+
+	if (tower.empty() or taller_and_heavier(tower.back(), people[i]))
+	{	// we can add a person to the bottom of the tower
+		// when 1: there's no one in the tower
+		//      2: the person we're trying to add is taller than 
+		// 		   heavier than the person on the bottom of the tower
+		vector<pair<int, int>> tower_cp = tower;
+		tower_cp.push_back(people[i]);
+
+		tower_include = highestTower2_helper(people, i + 1, tower_cp);
+	}
+
+	// the case that we don't include i th person
+	vector<pair<int, int>> tower_without = highestTower2_helper(people, i + 1, tower);
+
+	// the tower with more people in it is the answer
+	return (tower_include.size() > tower_without.size())?tower_include:tower_without;
+}
+
+vector<pair<int, int>> highestTower2(vector<pair<int, int>> people)
+{	// sort with respect to height
+	sort(people.begin(), people.end(), [](const pair<int, int>& p1, const pair<int, int>& p2)
+	{
+		return p1.first < p2.first;
+	});
+
+	// now, no person that comes earlier can be placed under
+	// a person that comes later in the vector "people"
+	vector<pair<int, int>> tower;
+	return highestTower2_helper(people, 0, tower);
+}
+
 int main()
 {
 	vector<pair<int, int>> ppl {{70, 150}, {56, 90}, {68, 110}, {65, 100}, {75, 190}, {60, 95}};
 	cout << highestTower1(ppl) << '\n';
-
+	auto result = highestTower2(ppl);
+	for (auto& t : result)
+	{
+		printf("(%d, %d)\n", t.first, t.second);
+	}
 	return 0;
 }
