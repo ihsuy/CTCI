@@ -45,20 +45,25 @@ Output: The longest tower is length 6 and includes from top to bottom:
 */
 
 
-// brute force
+bool taller_and_heavier(const pair<int, int>& p1, const pair<int, int>& p2)
+{	// decide if p2 can be place under p1
+	// in other words check if all dimensions of p2 is larger than p1
+	return (p2.first > p1.first and p2.second > p1.second);
+}
+
 int highestTower_bf_helper(vector<pair<int, int>> people, const int& prev, 
-	unordered_map<int, int>& buffer)
+	int* buffer)
 {
 	int maxh = 0;
 	for (int i = 0; i < people.size(); ++i)
 	{
-		if (people[i].first > people[prev].first
-		        and people[i].second > people[prev].second)
-		{	// valid person to be under "people[prev]" has to be
-			// both taller and heavier
+		if (taller_and_heavier(people[prev], people[i]))
+		{	// people[i] has to be both taller 
+			// and heavier than people[prev]
 			int lower_result = 0;
-			if(buffer.count(i) != 0)
-			{
+
+			if(buffer[i] != 0)
+			{	// if already calculated retrieve the prev result
 				lower_result = buffer[i];
 			}
 			else
@@ -66,7 +71,9 @@ int highestTower_bf_helper(vector<pair<int, int>> people, const int& prev,
 				lower_result = highestTower_bf_helper(people, i, buffer);
 				buffer[i] = lower_result;
 			}
+
 			int temp = lower_result + people[i].first;
+
 			if (temp > maxh)
 			{
 				maxh = temp;
@@ -79,10 +86,14 @@ int highestTower_bf_helper(vector<pair<int, int>> people, const int& prev,
 int highestTower_bf(const vector<pair<int, int>>& people)
 {
 	int maxh = 0;
-	unordered_map<int, int> buffer;
+
+	int* buffer = new int[people.size()];
+	memset(buffer, 0, sizeof(int)*people.size());
+
 	for (int top = 0; top < people.size(); ++top)
-	{
+	{	// try use every person as the top of tower
 		auto h = highestTower_bf_helper(people, top, buffer) + people[top].first;
+
 		if (h > maxh)
 		{
 			maxh = h;
@@ -93,7 +104,7 @@ int highestTower_bf(const vector<pair<int, int>>& people)
 
 int main()
 {
-	vector<pair<int, int>> ppl {{65, 100}, {70, 150}, {56, 90}, {75, 190}, {60, 95}, {68, 110}};
+	vector<pair<int, int>> ppl {{70, 150}, {56, 90}, {68, 110}, {65, 100}, {75, 190}, {60, 95}};
 	cout << highestTower_bf(ppl) << '\n';
 
 	return 0;
