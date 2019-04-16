@@ -39,37 +39,78 @@ For example, the first several multiples
 would be (in order) 1, 3, 5, 7, 9, 15, 21.
 */
 
-// brute force
-
-long long g357(const int& a, const int& b, const int& c)
-{
-	return pow(3, a)*pow(5, b)*pow(7, c);
-}
-
-long long kthMultipleOf357(const int& k)
+// method 1 brute force
+long long kthMultipleOf357_bf(const int& k)
 {
 	vector<long long> v;
 	v.reserve((k+1)*(k+1)*(k+1));
 
 	for(int a = 0; a <= k; ++a)
 	{
+		long long pa = pow(3, a);
 		for(int b = 0; b <= k; ++b)
 		{
+			long long pb = pow(5, b);
 			for(int c = 0; c <= k; ++c)
 			{
-				v.push_back(g357(a, b, c));
+				v.push_back(pa*pb*pow(7,c));
 			}
 		}
 	}
 
 	sort(v.begin(), v.end());
-	inspect<vector<long long>>(v);
+	
 	return v[k-1];
+}
+// method2 
+// find the smallest f*x thats larger than previous_result.back()
+// where f is one of the factors {3,5,7} and x is one of the previous_results
+long long kthMultipleOf357_O2(const int& k)
+{
+	vector<long long> factors{3, 5, 7};
+
+	vector<long long> results{1};
+	for(int i = 1; i < k; ++i)
+	{	// find the smallest product thats larger than results.back()
+		long long minmax = LLONG_MAX;
+
+		int f_high = 3; // 3 different factors
+
+		for(int j = 0; j < results.size(); ++j)
+		{
+			for(int f = 0; f < f_high; ++f)
+			{
+				long long temp_next = factors[f]*results[j];
+				if(temp_next > results.back() and temp_next < minmax)
+				{
+					minmax = temp_next;
+					// since the product is f*result[j]
+					// f and result are both in ascending order
+					// result[j+1] > result[j]
+					// thus f_new*result[j+1] > f_new*result[j]
+					// and we want f_new*result[j+1] to be smaller than f*result[j]
+					// we must have f_new < f
+					f_high = f; 
+					break;
+				}
+			}
+
+			if(f_high == 0)
+			{	// at this point, 
+				// its impossible for f*results[j] to be any smaller
+				break;
+			}
+		}
+		results.push_back(minmax);
+	}
+
+	inspect<vector<long long>>(results);
+	return results[k-1];
 }
 
 int main()
 {
-	cout << kthMultipleOf357(5) << '\n';
-
+	//cout << kthMultipleOf357_bf(5) << '\n';
+	cout << kthMultipleOf357_O2(100) << '\n';
 	return 0;
 }
