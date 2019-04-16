@@ -44,14 +44,16 @@ Output: The longest tower is length 6 and includes from top to bottom:
 (56, 90), (60, 95), (65, 100), (68, l10), (70, 150), (75, 190)
 */
 
-
+// method 1: use the fact that if tower[1, n] is correctly
+// constructed, we then only need to try to append every "valid" person
+// under the tower and find the one that yields the largest result
 bool taller_and_heavier(const pair<int, int>& p1, const pair<int, int>& p2)
 {	// decide if p2 can be place under p1
 	// in other words check if all dimensions of p2 is larger than p1
 	return (p2.first > p1.first and p2.second > p1.second);
 }
 
-int highestTower_bf_helper(vector<pair<int, int>> people, const int& prev, 
+int highestTower1_helper(vector<pair<int, int>> people, const int& prev, 
 	int* buffer)
 {
 	int maxh = 0;
@@ -60,6 +62,8 @@ int highestTower_bf_helper(vector<pair<int, int>> people, const int& prev,
 		if (taller_and_heavier(people[prev], people[i]))
 		{	// people[i] has to be both taller 
 			// and heavier than people[prev]
+			// then we only have the append the result 
+			// of when using people[i] as top of the tower
 			int lower_result = 0;
 
 			if(buffer[i] != 0)
@@ -68,7 +72,7 @@ int highestTower_bf_helper(vector<pair<int, int>> people, const int& prev,
 			}
 			else
 			{
-				lower_result = highestTower_bf_helper(people, i, buffer);
+				lower_result = highestTower1_helper(people, i, buffer);
 				buffer[i] = lower_result;
 			}
 
@@ -83,29 +87,30 @@ int highestTower_bf_helper(vector<pair<int, int>> people, const int& prev,
 	return maxh;
 }
 
-int highestTower_bf(const vector<pair<int, int>>& people)
+int highestTower1(const vector<pair<int, int>>& people)
 {
-	int maxh = 0;
-
 	int* buffer = new int[people.size()];
 	memset(buffer, 0, sizeof(int)*people.size());
 
+	int maxh = 0;
+
 	for (int top = 0; top < people.size(); ++top)
-	{	// try use every person as the top of tower
-		auto h = highestTower_bf_helper(people, top, buffer) + people[top].first;
+	{	// try use every person as the top of the tower
+		auto h = highestTower1_helper(people, top, buffer) + people[top].first;
 
 		if (h > maxh)
 		{
 			maxh = h;
 		}
 	}
+
 	return maxh;
 }
 
 int main()
 {
 	vector<pair<int, int>> ppl {{70, 150}, {56, 90}, {68, 110}, {65, 100}, {75, 190}, {60, 95}};
-	cout << highestTower_bf(ppl) << '\n';
+	cout << highestTower1(ppl) << '\n';
 
 	return 0;
 }
