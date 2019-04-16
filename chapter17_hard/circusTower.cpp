@@ -115,7 +115,6 @@ int highestTower1(const vector<pair<int, int>>& people)
 // sort and for each person in circus
 // create 2 branches : include or not include
 // solves the original problem
-
 vector<pair<int, int>> highestTower2_helper(const vector<pair<int, int>>& people, const int& i, vector<pair<int, int>>& tower)
 {
 	if (i == people.size())
