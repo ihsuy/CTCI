@@ -42,7 +42,7 @@ Input: {1, 2, 5, 9, 5, 9, 5, 5, 5} Output: 5
 */
 
 // brute force and ignore the restraint on space complexity
-int majorityElement(const vector<int>& nums)
+int majorityElement_bf(const vector<int>& nums)
 {
 	int half_sz = nums.size() / 2;
 	// simply count the appearance of every number
@@ -69,10 +69,49 @@ int majorityElement(const vector<int>& nums)
 	return -1;
 }
 
+// solution using O(1) space complexity (O(n) time complexity)
+int majorityElement_optimal(const vector<int>& nums)
+{	// go through nums twice
+	// first time: find the most appearing element
+	// second time: check if it appeared more than nums.size()/2 times
+	int half_sz = nums.size() / 2;
+
+	// find most frequently appearing number
+	// use an counter to track the "dominance" of
+	// quantity of any number. 
+	// domiance: at least how much more times does the current best 
+	// appears in the sequence
+	int best = 0, dominance = 0;
+	for (int i = 0; i < nums.size(); ++i)
+	{
+		if (dominance == 0)
+		{	// 0 dominance would mean there's no single element in nums
+			// has more appearance than all other elements
+			best = nums[i];
+			dominance++;
+		}
+
+		dominance += (nums[i] == best) ? 1 : -1;
+	}
+
+	// check if it did appear more than half_sz times
+	int count = 0;
+	for (const auto& n : nums)
+	{
+		if (n == best)
+		{
+			count++;
+		}
+	}
+
+	return (count > half_sz) ? best : -1;
+}
+
 int main()
 {
 	vector<int> nums {1, 2, 5, 9, 5, 9, 5, 5, 5};
-	cout << "brute force: " << majorityElement(nums) << '\n';
+	cout << "brute force: " << majorityElement_bf(nums) << '\n';
+	cout << "optimal:     " << majorityElement_optimal(nums) << '\n';
 
 	return 0;
 }
