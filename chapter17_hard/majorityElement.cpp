@@ -41,7 +41,7 @@ EXAMPLE
 Input: {1, 2, 5, 9, 5, 9, 5, 5, 5} Output: 5
 */
 
-// brute force and ignore the restraint on time & space complexity
+// brute force and ignore the restraint on space complexity
 int majorityElement(const vector<int>& nums)
 {
 	int half_sz = nums.size() / 2;
