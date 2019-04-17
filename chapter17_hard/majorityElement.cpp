@@ -90,7 +90,8 @@ int majorityElement_optimal(const vector<int>& nums)
 			best = nums[i];
 			dominance++;
 		}
-
+		// if we see the dominating number again, its domiance increase
+		// and vise versa
 		dominance += (nums[i] == best) ? 1 : -1;
 	}
 
