@@ -38,12 +38,12 @@ the same file (but different pairs of words),
 can you optimize your solution?
 */
 
-// solution O(m+n)
+// solution 1 O(m+n) m is number of word1 in text_file and n is number word2 in text_file
 // store word locations outside of the function for future reuse
 unordered_map<string, vector<int>> word_locations;
-int wordDistance(const string& test_file, const string& word1, const string& word2)
+int wordDistance(const string& text_file, const string& word1, const string& word2)
 {
-	stringstream tokenizer(test_file);
+	stringstream tokenizer(text_file);
 	string word;
 	int pos = 0;
 	while (tokenizer >> word)
@@ -89,15 +89,60 @@ int wordDistance(const string& test_file, const string& word1, const string& wor
 	return min_dist-1;
 }
 
+// solution 2 O(N) N total number of words in nums
+// don't use extra space and get the result in one interation (after tokenization)
+// but isn't effcient when performing multiple time in the same file
+pair<int, int> wordDistance2(const string& text_file, const string& word1, const string& word2)
+{	// tokenize the text file
+	stringstream tokenizer(text_file);
+	string word;
+	vector<string> words;
+	while (tokenizer >> word)
+	{	
+		words.push_back(word);
+	}
+
+	// keep track of the locations of the last seen word1 and word2
+	pair<int, int> best{-1, -1};
+	pair<int, int> prev{-1, -1};
+
+	for(int i = 0; i < words.size(); ++i)
+	{
+		if(words[i] == word1)
+		{	// if we find word1
+			// update the most recent seen word1 location to the current i
+			prev.first = i;
+			if(best.first == -1 or abs(prev.first-prev.second) < abs(best.first-best.second))
+			{	// if best result isn't yet updated or this new location of word1
+				// is shorter than the best distance
+				// update best distance
+				best.first = prev.first;
+				best.second = prev.second;
+			}
+		}
+		else if(words[i] == word2)
+		{	// similar to the case above
+			prev.second = i;
+			if(best.second == -1 or abs(prev.first-prev.second) < abs(best.first-best.second))
+			{
+				best.first = prev.first;
+				best.second = prev.second;
+			}
+		}
+	}
+	return best;
+}
 
 int main()
 {
-	string text = "tree anna and but cloud yushi since science golf anna however cloud can fiction";
+	string text = "tree anna and but cloud yushi since science golf anna however pole order cloud can fiction";
 
 	string w1 = "anna";
 	string w2 = "cloud";
 
 	cout << wordDistance(text, w1, w2) << '\n';
+	auto result = wordDistance2(text, w1, w2);
+	cout << result.first << ", " << result.second << '\n';
 
 	return 0;
 }
