@@ -141,6 +141,7 @@ int main()
 	bst->right->left->right = new BiNode(7);
 	bst->right->right = new BiNode(9);
 	bst->right->right->right = new BiNode(15);
+	
 	/*
 	test case:
 				5
@@ -151,6 +152,7 @@ int main()
 	       /      \	 \
 	      1        7 10
 	*/
+
 	cout << "result double linked list: ";
 	auto dll = bst_to_doubleLinkedList(bst);
 	while (dll != nullptr)
