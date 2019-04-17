@@ -72,27 +72,32 @@ int majorityElement_bf(const vector<int>& nums)
 // solution using O(1) space complexity (O(n) time complexity)
 int majorityElement_optimal(const vector<int>& nums)
 {	// go through nums twice
-	// first time: find the most appearing element
+	// first time: find the potential most appearing element
 	// second time: check if it appeared more than nums.size()/2 times
 	int half_sz = nums.size() / 2;
 
-	// find most frequently appearing number
-	// use an counter to track the "dominance" of
-	// quantity of any number. 
-	// domiance: at least how much more times does the current best 
-	// appears in the sequence
+	// find potential most frequently appearing number
+	// use the fact that if n is a "dominating element" in nums
+	// then it must also be a dominating element" in some subsequence of nums
+	// we probe alone nums and use a counter to track
+	// "balance" or "status of dominance"
+	// if its larger than 0 it necessarily means 
+	// it has the dominance in some subsequence
 	int best = 0, dominance = 0;
 	for (int i = 0; i < nums.size(); ++i)
 	{
 		if (dominance == 0)
 		{	// 0 dominance would mean there's no single element in nums
-			// has more appearance than all other elements
+			// has more appearance than all other elements added up
 			best = nums[i];
 			dominance++;
 		}
-		// if we see the dominating number again, its domiance increase
-		// and vise versa
-		dominance += (nums[i] == best) ? 1 : -1;
+		else
+		{
+			// if we see the dominating number again, its domiance increase
+			// and vise versa
+			dominance += (nums[i] == best) ? 1 : -1;
+		}
 	}
 
 	// check if it did appear more than half_sz times
@@ -110,7 +115,7 @@ int majorityElement_optimal(const vector<int>& nums)
 
 int main()
 {
-	vector<int> nums {1, 2, 5, 9, 5, 9, 5, 5, 5};
+	vector<int> nums {1, 0, 2, 0, 3, 0, 4, 0, 5, 0, 6, 0, 7, 0, 8, 0, /*0*//*release this beast to alter the result*/};
 	cout << "brute force: " << majorityElement_bf(nums) << '\n';
 	cout << "optimal:     " << majorityElement_optimal(nums) << '\n';
 
