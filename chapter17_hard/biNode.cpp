@@ -103,7 +103,10 @@ BiNode* bst_to_doubleLinkedList(BiNode* root)
 		else
 		{
 			while (not todo.empty() and todo.top()->right == nullptr)
-			{
+			{	// connect nodes of bst in place
+				// since we are at our current_node position now
+				// we don't care if we mess with the links on the left hand side
+				// of it since we are done with any nodes on the left hand side of it
 				udpate_and_connect(prev_node, current_node, todo.top(), dll);
 				todo.pop();
 			}
@@ -118,7 +121,6 @@ BiNode* bst_to_doubleLinkedList(BiNode* root)
 
 			todo.pop();
 			todo.push(current_top->right);
-
 		}
 	}
 
