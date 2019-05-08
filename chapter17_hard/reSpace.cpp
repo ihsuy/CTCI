@@ -39,15 +39,15 @@ Input jesslookedjustliketimherbrother
 Output: jess looked just like tim her brother (7 unrecognized characters)
 */
 
-pair<bool, int> canFit(const string& word, const string& doc, const vector<bool>& isTaken)
+pair<bool, int> canFit(const string& word, const string& doc, const vector<int>& isTaken)
 {
 	int upper = doc.length() - word.length() + 1;
 	for (int i = 0; i < upper; ++i)
 	{
-		if (not isTaken[i] and doc[i] == word[0])
+		if (isTaken[i] == 0 and doc[i] == word[0])
 		{
 			int j1 = i + 1, j2 = 1;
-			while (j2 < word.length() and doc[j1] == word[j2])
+			while (isTaken[j1] == 0 and j2 < word.length() and doc[j1] == word[j2])
 			{
 				j1++; j2++;
 			}
@@ -60,18 +60,21 @@ pair<bool, int> canFit(const string& word, const string& doc, const vector<bool>
 	return {false, -1};
 }
 
-void markTaken(const string& word, const int& p, vector<bool>& isTaken)
+void markTaken(const string& word, const int& p, vector<int>& isTaken)
 {
-	for (int i = p; i < p + word.length(); ++i)
+	int i = p;
+	for (int j = 0; i < p + word.length(); ++i)
 	{
-		isTaken[i] = true;
+		isTaken[i] = word[j++];
 	}
+	isTaken[p] = -isTaken[p];
+	isTaken[i - 1] = -isTaken[i - 1];
 }
 
 void FitWords(const vector<string>& dict, const string& doc,
               const int& w,
               const int& len_remain, int& min_remain,
-              vector<bool>& isTaken, vector<bool>& res)
+              vector<int>& isTaken, vector<int>& res)
 {
 	if (w == dict.size())
 	{
@@ -89,7 +92,7 @@ void FitWords(const vector<string>& dict, const string& doc,
 		auto fit_info = canFit(current_word, doc, isTaken);
 		if (fit_info.first)
 		{
-			vector<bool> newIsTaken {isTaken};
+			vector<int> newIsTaken {isTaken};
 			markTaken(current_word, fit_info.second, newIsTaken);
 
 			FitWords(dict, doc, i + 1,
@@ -108,21 +111,62 @@ string reSpace(const vector<string>& dict, const string& doc)
 	int max_len = doc.length(),
 	    min_remain = max_len;
 
-	vector<bool> isTaken(max_len, false), res;
+	vector<int> isTaken(max_len, 0), res;
 	FitWords(dict, doc, 0, max_len, min_remain, isTaken, res);
 
-	inspect<vector<bool>> (res);
+	string original_str;
+	for (int i = 0; i < res.size();)
+	{
+		if (res[i] == 0)
+		{
+			if (i != 0)
+			{
+				original_str += ' ';
+			}
+			while (res[i] == 0)
+			{
+				original_str += doc[i];
+				i++;
+			}
+		}
+		else if (res[i] < 0)
+		{
+			if (i != 0)
+			{
+				original_str += ' ';
+			}
+			original_str += -res[i++];
+			while (i < res.size() and res[i] > 0)
+			{
+				original_str += res[i++];
+			}
+			original_str += -res[i++];
+		}
+		else
+		{
+			original_str += res[i++];
+		}
+	}
 
-	return "";
+	return original_str;
 }
 
 int main()
 {
 	vector<string> dictionary
 	{
-		"looked", "just", "look", "like", "her", "other", "brother"
+		"brother", "just", "look", "like", "her", "other", "looked"
 	};
 	string s = "jesslookedjustliketimherbrother";
-	reSpace(dictionary, s);
+	cout << reSpace(dictionary, s) << '\n';
+
+	vector<string> dictionary2
+	{
+		"tall", "spaces", "boot", "not", "did", "removed", "remove",
+		"accidentally", "accident", "have", "all", "you", "oh", "no"
+	};
+	string s2 = "ohnoyouhaveaccidentallyremovedallspaces";
+
+	cout << reSpace(dictionary2, s2) << '\n';
 	return 0;
 }
