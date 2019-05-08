@@ -82,10 +82,6 @@ bool isDest(const int& r, const int& c, const pair<int, int>& dest)
 {
     return r == dest.first and c == dest.second;
 }
-bool isDest(const pair<int, int>& cl, const pair<int, int>& dest)
-{
-    return cl.first == dest.first and cl.second == dest.second;
-}
 
 double computeH(const int& r, const int& c, const pair<int, int>& dest)
 {
@@ -120,9 +116,8 @@ vector<pair<int, int>> AStarSearch(const vector<vector<int>>& graph,
     {
         throw runtime_error("invalid src | dest");
     }
-    if (isDest(src, dest))
+    if (isDest(src.first, src.second, dest))
     {
-        cout << "Warning: src is dest\n";
         return {dest};
     }
 
