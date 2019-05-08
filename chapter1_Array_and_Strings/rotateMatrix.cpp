@@ -15,12 +15,11 @@ for a matrix A NxN, the n-layer is defined as:
 all entries that are surrouding the (N-1-n)x(N-1-n) submatrix at center of A
 */
 
-
+// does in place rotation of layers
 void layerRotate(vector<vector<int>>& m, const int& n, const bool& clockwise=true)
 {
-	// this function will do a in place rotation of layer
 	int w = m.size()-1-n;
-
+	
 	for(int i = n; i < w; ++i)
 	{
 		int u_col = i, u_row = n,
@@ -48,11 +47,10 @@ void layerRotate(vector<vector<int>>& m, const int& n, const bool& clockwise=tru
 
 }
 
+// loops over the "layers" and rotate each of them
 void matrixRotate(vector<vector<int>>& m, const bool& clockwise=true)
-{
-	// checking size is omitted
-
-	// this function will loop over the layers
+{	// input verification is omitted
+	
 	for(int i = 0; i < m.size()/2; ++i)
 	{
 		layerRotate(m, i, clockwise);
@@ -76,14 +74,18 @@ void showMatrix(const vector<vector<int>> m)
 
 int main()
 {
-	vector<vector<int>> m = {
-		{1}
+	vector<vector<int>> m
+	{
+		{1,2,3},
+		{4,5,6},
+		{7,8,9}
 	};
-	//showMatrix(m);
+	showMatrix(m);
 	matrixRotate(m);
 	showMatrix(m);
 	matrixRotate(m);
 	matrixRotate(m);
 	showMatrix(m);
+	
 	return 0;
 }
