@@ -17,13 +17,6 @@
 #include <fstream>
 #include <string>
 
-typedef long long ll;
-inline int two(int n) { return 1 << n; }
-inline int test(int n, int b) { return (n >> b) & 1; }
-inline void set_bit(int & n, int b) { n |= two(b); }
-inline void unset_bit(int & n, int b) { n &= ~two(b); }
-inline int last_bit(int n) { return n & (-n); }
-inline int ones(int n) { int res = 0; while (n && ++res) n -= n & (-n); return res; }
 template<typename T>
 inline void inspect(T& t) {typename T::iterator i1 = t.begin(), i2 = t.end(); while (i1 != i2) {std::cout << (*i1) << ' '; i1++;} std::cout << '\n';}
 
@@ -46,43 +39,90 @@ Input jesslookedjustliketimherbrother
 Output: jess looked just like tim her brother (7 unrecognized characters)
 */
 
-int reSpace_helper(const string& line, const int& p, const int& i,
-                   unordered_set<string>& dictionary, const string& result)
+pair<bool, int> canFit(const string& word, const string& doc, const vector<bool>& isTaken)
 {
-	if (i >= line.length() and p < line.length())
+	int upper = doc.length() - word.length() + 1;
+	for (int i = 0; i < upper; ++i)
 	{
-		return reSpace_helper(line, p + 1, p + 2, dictionary, "");
+		if (not isTaken[i] and doc[i] == word[0])
+		{
+			int j1 = i + 1, j2 = 1;
+			while (j2 < word.length() and doc[j1] == word[j2])
+			{
+				j1++; j2++;
+			}
+			if (j2 == word.length())
+			{
+				return {true, i};
+			}
+		}
+	}
+	return {false, -1};
+}
+
+void markTaken(const string& word, const int& p, vector<bool>& isTaken)
+{
+	for (int i = p; i < p + word.length(); ++i)
+	{
+		isTaken[i] = true;
+	}
+}
+
+void FitWords(const vector<string>& dict, const string& doc,
+              const int& w,
+              const int& len_remain, int& min_remain,
+              vector<bool>& isTaken, vector<bool>& res)
+{
+	if (w == dict.size())
+	{
+		if (len_remain < min_remain)
+		{
+			min_remain = len_remain;
+			res = isTaken;
+		}
+		return;
+	}
+
+	for (int i = w; i < dict.size(); ++i)
+	{
+		string current_word = dict[i];
+		auto fit_info = canFit(current_word, doc, isTaken);
+		if (fit_info.first)
+		{
+			vector<bool> newIsTaken {isTaken};
+			markTaken(current_word, fit_info.second, newIsTaken);
+
+			FitWords(dict, doc, i + 1,
+			         len_remain - current_word.length(), min_remain,
+			         newIsTaken, res);
+		}
+		FitWords(dict, doc, i + 1,
+		         len_remain, min_remain,
+		         isTaken, res);
 
 	}
-	else if (p >= line.length())
-	{
+}
 
-		return 0;
-	}
-	string word = line.substr(p, i - p + 1);
-	cout << word << '\n';
-	int len1 = 0;
-	if (dictionary.count(line.substr(p, i - p + 1)))
-	{
-		cout << "match!\n";
-		// include this word
-		len1 = reSpace_helper(line, p + i + 1, p + i + 2, dictionary, result + " " + word);
+string reSpace(const vector<string>& dict, const string& doc)
+{
+	int max_len = doc.length(),
+	    min_remain = max_len;
 
-	}
-	// do not include this word
-	auto len2 = reSpace_helper(line, p, i + 1, dictionary, result)+1;
+	vector<bool> isTaken(max_len, false), res;
+	FitWords(dict, doc, 0, max_len, min_remain, isTaken, res);
 
-	return min(len1, len2);
+	inspect<vector<bool>> (res);
+
+	return "";
 }
 
 int main()
 {
-	unordered_set<string> dictionary
+	vector<string> dictionary
 	{
-		"looked", "just", "look", "like", "her", "herb", "other", "brother"
+		"looked", "just", "look", "like", "her", "other", "brother"
 	};
-	string s = "";
-	cout << reSpace_helper("jesslookedjustliketimherbrother", 0, 1, dictionary, s) << '\n';
-	cout << s << endl;
+	string s = "jesslookedjustliketimherbrother";
+	reSpace(dictionary, s);
 	return 0;
 }
