@@ -151,6 +151,55 @@ string reSpace(const vector<string>& dict, const string& doc)
 	return original_str;
 }
 
+struct ParseResult
+{
+	int invalid;
+	string parsed;
+	ParseResult(const int& iv, const string& pd)
+		: invalid(iv), parsed(pd) {}
+};
+
+ParseResult split(unordered_set<string>& dictionary,
+                  const string& sentence, const int& start)
+{
+	if (start >= sentence.length())
+	{
+		return ParseResult(0, "");
+	}
+
+	int bestInvalid = INT_MAX;
+	string bestParsed, partial;
+	int i = start;
+	while (i < sentence.length())
+	{
+		partial += sentence[i];
+		int invalid = dictionary.count(partial) == 0 ? partial.length() : 0;
+		if (invalid < bestInvalid)
+		{
+			ParseResult result = split(dictionary, sentence, i + 1);
+			invalid += result.invalid;
+			if (invalid < bestInvalid)
+			{
+				bestInvalid = invalid;
+				bestParsed = partial + ' ' + result.parsed;
+				if (bestInvalid == 0)
+				{
+					break;
+				}
+			}
+		}
+		i++;
+	}
+
+	return ParseResult(bestInvalid, bestParsed);
+}
+
+string bestSplit(unordered_set<string>& dictionary, const string& sentence)
+{
+	ParseResult result = split(dictionary,sentence, 0);
+	return result.parsed;
+}
+
 int main()
 {
 	vector<string> dictionary
@@ -165,8 +214,13 @@ int main()
 		"tall", "spaces", "boot", "not", "did", "removed", "remove",
 		"accidentally", "accident", "have", "all", "you", "oh", "no"
 	};
+	unordered_set<string> dictionary3
+	{
+		"tall", "spaces", "boot", "not", "did", "removed", "remove",
+		"accidentally", "accident", "have", "all", "you", "oh", "no"
+	};
 	string s2 = "ohnoyouhaveaccidentallyremovedallspaces";
-
-	cout << reSpace(dictionary2, s2) << '\n';
+	cout << bestSplit(dictionary3, s2) << '\n';
+	// cout << reSpace(dictionary2, s2) << '\n';
 	return 0;
 }
