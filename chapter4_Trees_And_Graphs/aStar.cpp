@@ -250,11 +250,6 @@ int main()
     auto graph = GenerateGraph(h, w, src, dest, obstacle_rate);
 
     auto path = A_Star_Search(graph, src, dest);
-    
-    // for (int i = 0; i < path.size(); ++i)
-    // {
-    //     cout << '(' << path[i].first << ", " << path[i].second << ')' << '\n';
-    // }
 
     RenderGraph(graph, path);
     if (path.size() == 0)
