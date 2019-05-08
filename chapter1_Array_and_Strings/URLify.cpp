@@ -46,7 +46,7 @@ void URLify_arr(char* charr, int len)
 		}
 	}
 
-	// key is to do this from backward
+	// the key is to loop backward
 	int full_len = len + num_space*2;
 
 	int j = full_len-1;
