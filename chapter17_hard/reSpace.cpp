@@ -155,16 +155,24 @@ struct ParseResult
 {
 	int invalid;
 	string parsed;
+	bool empty;
 	ParseResult(const int& iv, const string& pd)
-		: invalid(iv), parsed(pd) {}
+		: invalid(iv), parsed(pd), empty(false) {}
+	ParseResult()
+		: invalid(0), parsed(""), empty(true) {}
 };
 
 ParseResult split(unordered_set<string>& dictionary,
-                  const string& sentence, const int& start)
+                  const string& sentence, const int& start,
+                  vector<ParseResult>& buffer)
 {
+	if (not buffer[start].empty)
+	{
+		return buffer[start];
+	}
 	if (start >= sentence.length())
 	{
-		return ParseResult(0, "");
+		return ParseResult();
 	}
 
 	int bestInvalid = INT_MAX;
@@ -176,7 +184,7 @@ ParseResult split(unordered_set<string>& dictionary,
 		int invalid = dictionary.count(partial) == 0 ? partial.length() : 0;
 		if (invalid < bestInvalid)
 		{
-			ParseResult result = split(dictionary, sentence, i + 1);
+			ParseResult result = split(dictionary, sentence, i + 1, buffer);
 			invalid += result.invalid;
 			if (invalid < bestInvalid)
 			{
@@ -190,13 +198,14 @@ ParseResult split(unordered_set<string>& dictionary,
 		}
 		i++;
 	}
-
-	return ParseResult(bestInvalid, bestParsed);
+	buffer[start] = ParseResult(bestInvalid, bestParsed);
+	return buffer[start];
 }
 
 string bestSplit(unordered_set<string>& dictionary, const string& sentence)
 {
-	ParseResult result = split(dictionary,sentence, 0);
+	vector<ParseResult> buffer(sentence.length(), ParseResult());
+	ParseResult result = split(dictionary, sentence, 0, buffer);
 	return result.parsed;
 }
 
@@ -217,9 +226,12 @@ int main()
 	unordered_set<string> dictionary3
 	{
 		"tall", "spaces", "boot", "not", "did", "removed", "remove",
-		"accidentally", "accident", "have", "all", "you", "oh", "no"
+		"accidentally", "accident", "have", "all", "you", "oh", "no",
+		"punctuation", "capital", "capitalize", "capitalization",
+		"and", "a", "length", "lengthy", "document", "in"
 	};
-	string s2 = "ohnoyouhaveaccidentallyremovedallspaces";
+	string s2 = "ohnoyouhaveaccidentallyremovedallspaces"
+	            "punctuationandcapitalizationinalengthydocument";
 	cout << bestSplit(dictionary3, s2) << '\n';
 	// cout << reSpace(dictionary2, s2) << '\n';
 	return 0;
