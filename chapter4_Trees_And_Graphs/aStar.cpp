@@ -30,7 +30,8 @@ Implement the A* search algorithm
 
 const int ndir = 8;
 const vector<int> directions { -1, -1, 1, 1, -1, 0, 1, 0, -1};
-
+// const int ndir = 4;
+// const vector<int> directions {-1, 0, 1, 0, -1};
 struct cell
 {
     int parent_r,
@@ -110,12 +111,12 @@ vector<pair<int, int>> GeneratePath(const pair<int, int>& dest,
     return path;
 }
 
-vector<pair<int, int>> A_Star_Search(const vector<vector<int>>& graph,
-                                     const pair<int, int>& src,
-                                     const pair<int, int>& dest)
+vector<pair<int, int>> AStarSearch(const vector<vector<int>>& graph,
+                                   const pair<int, int>& src,
+                                   const pair<int, int>& dest)
 {
-    if (not isValid(src, graph) or not isValid(dest, graph) or
-            isBlocked(src, graph) or isBlocked(dest, graph))
+    if (not isValid(src, graph) or not isValid(dest, graph)
+            or isBlocked(src, graph) or isBlocked(dest, graph))
     {
         throw runtime_error("invalid src | dest");
     }
@@ -125,7 +126,7 @@ vector<pair<int, int>> A_Star_Search(const vector<vector<int>>& graph,
         return {dest};
     }
 
-    vector<vector<bool>> cellsTaken(graph.size(),
+    vector<vector<bool>> cellsSeen(graph.size(),
                                     vector<bool>(graph[0].size(), false));
     vector<vector<cell>> cellsDetail(graph.size(),
                                      vector<cell>(graph[0].size(), cell()));
@@ -142,8 +143,7 @@ vector<pair<int, int>> A_Star_Search(const vector<vector<int>>& graph,
 
         int r = p.second.first, c = p.second.second;
 
-
-        cellsTaken[r][c] = true;
+        cellsSeen[r][c] = true;
 
         for (int i = 0; i < ndir; ++i)
         {
@@ -158,7 +158,7 @@ vector<pair<int, int>> A_Star_Search(const vector<vector<int>>& graph,
                     return GeneratePath(dest, cellsDetail);
                 }
 
-                if (not cellsTaken[next_r][next_c] and
+                if (not cellsSeen[next_r][next_c] and
                         not isBlocked(next_r, next_c, graph))
                 {
                     double next_g = cellsDetail[r][c].g + 1,
@@ -177,6 +177,7 @@ vector<pair<int, int>> A_Star_Search(const vector<vector<int>>& graph,
     return {};
 }
 
+// >>> utilities <<<
 vector<vector<int>> GenerateGraph(const int& h, const int& w,
                                   const pair<int, int>& src,
                                   const pair<int, int>& dest,
@@ -245,11 +246,13 @@ int main()
     //     { 1, 1, 1, 0, 0, 0, 1, 0, 0, 1 }
     // };
 
-    int h = 50, w = 50, obstacle_rate = 2;
+    // graph height, width
+    // and avg 1 out of how many cells should be an obstacle
+    int h = 50, w = 50, obstacle_rate = 4;
     pair<int, int> src {0, 0}, dest{h - 1, w - 1};
     auto graph = GenerateGraph(h, w, src, dest, obstacle_rate);
 
-    auto path = A_Star_Search(graph, src, dest);
+    auto path = AStarSearch(graph, src, dest);
 
     RenderGraph(graph, path);
     if (path.size() == 0)
