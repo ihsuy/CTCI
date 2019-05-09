@@ -153,52 +153,97 @@ string reSpace(const vector<string>& dict, const string& doc)
 
 struct ParseResult
 {
-	int invalid;
+	int remain;
 	string parsed;
 	bool empty;
 	ParseResult(const int& iv, const string& pd)
-		: invalid(iv), parsed(pd), empty(false) {}
+		: remain(iv), parsed(pd), empty(false) {}
 	ParseResult()
-		: invalid(0), parsed(""), empty(true) {}
+		: remain(0), parsed(""), empty(true) {}
 };
 
-ParseResult split(unordered_set<string>& dictionary,
-                  const string& sentence, const int& start,
-                  vector<ParseResult>& buffer)
+// ParseResult split(unordered_set<string>& dictionary,
+//                   const string& sentence, const int& start,
+//                   vector<ParseResult>& buffer)
+// {
+// 	if (not buffer[start].empty)
+// 	{
+// 		return buffer[start];
+// 	}
+// 	if (start >= sentence.length())
+// 	{
+// 		return ParseResult();
+// 	}
+
+// 	int bestremain = INT_MAX;
+// 	string best_parsed, partial;
+// 	int i = start;
+// 	while (i < sentence.length())
+// 	{
+// 		partial += sentence[i];
+// 		int remain = dictionary.count(partial) == 0 ? partial.length() : 0;
+// 		if (remain < bestremain)
+// 		{
+// 			ParseResult result = split(dictionary, sentence, i + 1, buffer);
+// 			remain += result.remain;
+// 			if (remain < bestremain)
+// 			{
+// 				bestremain = remain;
+// 				best_parsed = partial + ' ' + result.parsed;
+// 				if (bestremain == 0)
+// 				{
+// 					break;
+// 				}
+// 			}
+// 		}
+// 		i++;
+// 	}
+// 	buffer[start] = ParseResult(bestremain, best_parsed);
+// 	return buffer[start];
+// }
+
+// string bestSplit(unordered_set<string>& dictionary, const string& sentence)
+// {
+// 	vector<ParseResult> buffer(sentence.length(), ParseResult());
+// 	ParseResult result = split(dictionary, sentence, 0, buffer);
+// 	return result.parsed;
+// }
+
+ParseResult split(unordered_set<string>& dictionary, const string& sentence,
+                  const int& start, vector<ParseResult>& buffer)
 {
-	if (not buffer[start].empty)
-	{
-		return buffer[start];
-	}
 	if (start >= sentence.length())
 	{
 		return ParseResult();
 	}
+	if (not buffer[start].empty)
+	{
+		return buffer[start];
+	}
 
-	int bestInvalid = INT_MAX;
-	string bestParsed, partial;
-	int i = start;
-	while (i < sentence.length())
+	string partial, best_parsed;
+	int remain = 0, best_remain = INT_MAX;
+	for (int i = start; i < sentence.length(); ++i)
 	{
 		partial += sentence[i];
-		int invalid = dictionary.count(partial) == 0 ? partial.length() : 0;
-		if (invalid < bestInvalid)
+		remain = dictionary.count(partial) ? 0 : partial.length();
+		if (remain < best_remain)
 		{
-			ParseResult result = split(dictionary, sentence, i + 1, buffer);
-			invalid += result.invalid;
-			if (invalid < bestInvalid)
+			ParseResult next_result = split(dictionary, sentence, i + 1, buffer);
+			remain += next_result.remain;
+			if (remain < best_remain)
 			{
-				bestInvalid = invalid;
-				bestParsed = partial + ' ' + result.parsed;
-				if (bestInvalid == 0)
+				best_remain = remain;
+				best_parsed = partial + ' ' + next_result.parsed;
+				if (best_remain == 0)
 				{
 					break;
 				}
 			}
 		}
-		i++;
 	}
-	buffer[start] = ParseResult(bestInvalid, bestParsed);
+
+	buffer[start] = ParseResult(best_remain, best_parsed);
 	return buffer[start];
 }
 
