@@ -214,7 +214,7 @@ int calculator_stack(const string& expression)
 		i++;
 	}
 
-	throw runtime_error("calculator_stack: incorrectly formatted expression expression.");
+	throw runtime_error("calculator_stack: incorrectly formatted expression.");
 }
 
 int main()
