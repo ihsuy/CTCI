@@ -1,25 +1,33 @@
-#include <iostream>
-#include <vector>
-#include <unordered_set>
-#include <unordered_map>
-#include <set>
-#include <map>
-#include <list>
-#include <chrono>
-#include <random>
-#include <algorithm>
 #include <math.h>
-#include <queue>
-#include <stack>
-#include <sstream>
-#include <utility>
+
+#include <algorithm>
 #include <bitset>
+#include <chrono>
 #include <fstream>
+#include <iostream>
+#include <list>
+#include <map>
+#include <queue>
+#include <random>
+#include <set>
+#include <sstream>
+#include <stack>
 #include <string>
+#include <unordered_map>
+#include <unordered_set>
+#include <utility>
+#include <vector>
 
 typedef long long ll;
-template<typename T>
-inline void inspect(T& t) {typename T::iterator i1 = t.begin(), i2 = t.end(); while (i1 != i2) {std::cout << (*i1) << ' '; i1++;} std::cout << '\n';}
+template <typename T>
+inline void inspect(T& t) {
+    typename T::iterator i1 = t.begin(), i2 = t.end();
+    while (i1 != i2) {
+        std::cout << (*i1) << ' ';
+        i1++;
+    }
+    std::cout << '\n';
+}
 
 /////////////////////////////////////////////////////////////
 using namespace std;
@@ -29,77 +37,58 @@ Implement the A* search algorithm
 */
 
 const int ndir = 8;
-const vector<int> directions { -1, -1, 1, 1, -1, 0, 1, 0, -1};
+const vector<int> directions{-1, -1, 1, 1, -1, 0, 1, 0, -1};
 // const int ndir = 4;
 // const vector<int> directions {-1, 0, 1, 0, -1};
-struct cell
-{
-    int parent_r,
-        parent_c;
+struct cell {
+    int parent_r, parent_c;
     double f, g;
 
-    cell()
-        :   parent_r(-1), parent_c(-1),
-            f(ULONG_MAX), g(ULONG_MAX)
-    {}
+    cell() : parent_r(-1), parent_c(-1), f(ULONG_MAX), g(ULONG_MAX) {}
 
-    void updateParam(const int& pr, const int& pc,
-                     const double& ff, const double& gg)
-    {
+    void updateParam(const int& pr,
+                     const int& pc,
+                     const double& ff,
+                     const double& gg) {
         parent_r = pr, parent_c = pc, f = ff, g = gg;
     }
-    void updateParents(const int& pr, const int& pc)
-    {
+    void updateParents(const int& pr, const int& pc) {
         parent_r = pr, parent_c = pc;
     }
 };
 
-bool isValid(const int& r, const int& c,
-             const vector<vector<int>>& graph)
-{
-    return (r >= 0) and (r < graph.size()) and
-           (c >= 0) and (c < graph[0].size());
+bool isValid(const int& r, const int& c, const vector<vector<int>>& graph) {
+    return (r >= 0) and (r < graph.size()) and (c >= 0) and
+           (c < graph[0].size());
 }
-bool isValid(const pair<int, int>& cl,
-             const vector<vector<int>>& graph)
-{
+bool isValid(const pair<int, int>& cl, const vector<vector<int>>& graph) {
     return (cl.first >= 0) and (cl.first < graph.size()) and
            (cl.second >= 0) and (cl.second < graph[0].size());
 }
 
-bool isBlocked(const int& r, const int& c,
-               const vector<vector<int>>& graph)
-{
+bool isBlocked(const int& r, const int& c, const vector<vector<int>>& graph) {
     return graph[r][c] == 0;
 }
-bool isBlocked(const pair<int, int>& cl,
-               const vector<vector<int>>& graph)
-{
+bool isBlocked(const pair<int, int>& cl, const vector<vector<int>>& graph) {
     return graph[cl.first][cl.second] == 0;
 }
 
-bool isDest(const int& r, const int& c, const pair<int, int>& dest)
-{
+bool isDest(const int& r, const int& c, const pair<int, int>& dest) {
     return r == dest.first and c == dest.second;
 }
 
-double computeH(const int& r, const int& c, const pair<int, int>& dest)
-{
+double computeH(const int& r, const int& c, const pair<int, int>& dest) {
     int a = r - dest.first, b = c - dest.second;
     return sqrt(a * a + b * b);
 }
 
 vector<pair<int, int>> GeneratePath(const pair<int, int>& dest,
-                                    const vector<vector<cell>>& cellsDetail)
-{
+                                    const vector<vector<cell>>& cellsDetail) {
     vector<pair<int, int>> path;
-    int r = dest.first,
-        c = dest.second;
-    while (cellsDetail[r][c].parent_r != r or cellsDetail[r][c].parent_c != c)
-    {
+    int r = dest.first, c = dest.second;
+    while (cellsDetail[r][c].parent_r != r or cellsDetail[r][c].parent_c != c) {
         path.push_back({r, c});
-        int pr = cellsDetail[r][c].parent_r,
-            pc = cellsDetail[r][c].parent_c;
+        int pr = cellsDetail[r][c].parent_r, pc = cellsDetail[r][c].parent_c;
         r = pr, c = pc;
     }
     path.push_back({r, c});
@@ -109,20 +98,17 @@ vector<pair<int, int>> GeneratePath(const pair<int, int>& dest,
 
 vector<pair<int, int>> AStarSearch(const vector<vector<int>>& graph,
                                    const pair<int, int>& src,
-                                   const pair<int, int>& dest)
-{
-    if (not isValid(src, graph) or not isValid(dest, graph)
-            or isBlocked(src, graph) or isBlocked(dest, graph))
-    {
+                                   const pair<int, int>& dest) {
+    if (not isValid(src, graph) or not isValid(dest, graph) or
+        isBlocked(src, graph) or isBlocked(dest, graph)) {
         throw runtime_error("invalid src | dest");
     }
-    if (isDest(src.first, src.second, dest))
-    {
+    if (isDest(src.first, src.second, dest)) {
         return {dest};
     }
 
     vector<vector<bool>> cellsSeen(graph.size(),
-                                    vector<bool>(graph[0].size(), false));
+                                   vector<bool>(graph[0].size(), false));
     vector<vector<cell>> cellsDetail(graph.size(),
                                      vector<cell>(graph[0].size(), cell()));
 
@@ -131,8 +117,7 @@ vector<pair<int, int>> AStarSearch(const vector<vector<int>>& graph,
     set<pair<double, pair<int, int>>> todo;
     todo.insert({0, src});
 
-    while (not todo.empty())
-    {
+    while (not todo.empty()) {
         pair<double, pair<int, int>> p = *todo.begin();
         todo.erase(todo.begin());
 
@@ -140,27 +125,22 @@ vector<pair<int, int>> AStarSearch(const vector<vector<int>>& graph,
 
         cellsSeen[r][c] = true;
 
-        for (int i = 0; i < ndir; ++i)
-        {
-            int next_r = r + directions[i],
-                next_c = c + directions[i + 1];
+        for (int i = 0; i < ndir; ++i) {
+            int next_r = r + directions[i], next_c = c + directions[i + 1];
 
-            if (isValid(next_r, next_c, graph))
-            {
-                if (isDest(next_r, next_c, dest))
-                {
+            if (isValid(next_r, next_c, graph)) {
+                if (isDest(next_r, next_c, dest)) {
                     cellsDetail[next_r][next_c].updateParents(r, c);
                     return GeneratePath(dest, cellsDetail);
                 }
 
                 if (not cellsSeen[next_r][next_c] and
-                        not isBlocked(next_r, next_c, graph))
-                {
+                    not isBlocked(next_r, next_c, graph)) {
                     double next_g = cellsDetail[r][c].g + 1,
                            next_f = next_g + computeH(next_r, next_c, dest);
-                    if (next_f < cellsDetail[next_r][next_c].f)
-                    {
-                        cellsDetail[next_r][next_c].updateParam(r, c, next_f, next_g);
+                    if (next_f < cellsDetail[next_r][next_c].f) {
+                        cellsDetail[next_r][next_c].updateParam(r, c, next_f,
+                                                                next_g);
 
                         todo.insert({next_f, {next_r, next_c}});
                     }
@@ -173,18 +153,15 @@ vector<pair<int, int>> AStarSearch(const vector<vector<int>>& graph,
 }
 
 // >>> utilities <<<
-vector<vector<int>> GenerateGraph(const int& h, const int& w,
+vector<vector<int>> GenerateGraph(const int& h,
+                                  const int& w,
                                   const pair<int, int>& src,
                                   const pair<int, int>& dest,
-                                  const int& obstacle_rate = 7)
-{
+                                  const int& obstacle_rate = 7) {
     vector<vector<int>> graph(h, vector<int>(w, 1));
-    for (int i = 0; i < h; ++ i)
-    {
-        for (int j = 0; j < w; ++j)
-        {
-            if (rand() % obstacle_rate == 0)
-            {
+    for (int i = 0; i < h; ++i) {
+        for (int j = 0; j < w; ++j) {
+            if (rand() % obstacle_rate == 0) {
                 graph[i][j] = 0;
             }
         }
@@ -194,29 +171,20 @@ vector<vector<int>> GenerateGraph(const int& h, const int& w,
 }
 
 void RenderGraph(vector<vector<int>> graph,
-                 const vector<pair<int, int>>& path)
-{
-    for (int i = 0; i < path.size(); ++i)
-    {
+                 const vector<pair<int, int>>& path) {
+    for (int i = 0; i < path.size(); ++i) {
         graph[path[i].first][path[i].second] = 2;
     }
 
-    for (int i = 0; i < graph.size(); ++i)
-    {
+    for (int i = 0; i < graph.size(); ++i) {
         cout << "|";
-        for (int j = 0; j < graph[0].size(); ++j)
-        {
+        for (int j = 0; j < graph[0].size(); ++j) {
             int v = graph[i][j];
-            if (v == 0)
-            {
+            if (v == 0) {
                 cout << '.';
-            }
-            else if (v == 1)
-            {
+            } else if (v == 1) {
                 cout << ' ';
-            }
-            else if (v == 2)
-            {
+            } else if (v == 2) {
                 cout << '#';
             }
         }
@@ -224,8 +192,7 @@ void RenderGraph(vector<vector<int>> graph,
     }
 }
 
-int main()
-{
+int main() {
     srand(chrono::high_resolution_clock::now().time_since_epoch().count());
 
     // vector<vector<int>> graph
@@ -244,14 +211,13 @@ int main()
     // graph height, width
     // and avg 1 out of how many cells should be an obstacle
     int h = 50, w = 50, obstacle_rate = 4;
-    pair<int, int> src {0, 0}, dest{h - 1, w - 1};
+    pair<int, int> src{0, 0}, dest{h - 1, w - 1};
     auto graph = GenerateGraph(h, w, src, dest, obstacle_rate);
 
     auto path = AStarSearch(graph, src, dest);
 
     RenderGraph(graph, path);
-    if (path.size() == 0)
-    {
+    if (path.size() == 0) {
         cout << "no path found\n";
     }
     return 0;

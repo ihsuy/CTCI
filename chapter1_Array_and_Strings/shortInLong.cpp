@@ -3,76 +3,61 @@
 #include <string>
 using namespace std;
 
-void init_map(map<char, int>& m, const string& s)
-{
-    for(int i = 'a'; i <= 'z'; ++i)
-    {
+void init_map(map<char, int>& m, const string& s) {
+    for (int i = 'a'; i <= 'z'; ++i) {
         m[char(i)] = 0;
     }
-    for(auto ch : s)
-    {
-        m[ch] ++;
+    for (auto ch : s) {
+        m[ch]++;
     }
 }
 
-void reset_map(map<char, int>& m)
-{
-    for(auto& item : m)
-    {
+void reset_map(map<char, int>& m) {
+    for (auto& item : m) {
         item.second = 0;
     }
 }
 
-void shortInLong(const string& l, const string& s)
-{
+void shortInLong(const string& l, const string& s) {
     auto lenl = l.length();
     auto lens = s.length();
     // check for invalid input
-    if(lenl < lens)
-    {
+    if (lenl < lens) {
         cout << "bad input" << endl;
         return;
     }
-    
+
     // prepare containers
     map<char, int> inS;
     map<char, int> inL;
-    
+
     init_map(inS, s);
     init_map(inL, "");
-    
-    
-    for(auto i = 0; i < lenl-lens+1; ++i)
-    {
+
+    for (auto i = 0; i < lenl - lens + 1; ++i) {
         int counter = 0;
         string ans;
-        for(auto j = i; j < i+lens; ++j)
-        {
-            if(inS[l[j]] != 0)
-            {
+        for (auto j = i; j < i + lens; ++j) {
+            if (inS[l[j]] != 0) {
                 inL[l[j]]++;
                 counter++;
                 ans += l[j];
-            }
-            else
-            {
+            } else {
                 reset_map(inL);
                 i += counter;
                 counter = 0;
                 ans = "";
                 break;
             }
-            
-            if(inL[l[j]] > inS[l[j]])
-            {
+
+            if (inL[l[j]] > inS[l[j]]) {
                 reset_map(inL);
                 counter = 0;
                 ans = "";
                 break;
             }
-            
-            if(counter == lens)
-            {
+
+            if (counter == lens) {
                 cout << ans << " at " << i << endl;
                 reset_map(inL);
                 counter = 0;
@@ -82,7 +67,7 @@ void shortInLong(const string& l, const string& s)
     }
 }
 
-int main(){
+int main() {
     string L = "cbabadcbbabbcbabaabccbabc";
     string s = "abbc";
     shortInLong(L, s);
